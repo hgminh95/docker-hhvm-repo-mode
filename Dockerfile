@@ -1,5 +1,7 @@
 FROM diegomarangoni/hhvm
 
+MAINTAINER hgminh95@gmail.com
+
 COPY php.ini /etc/hhvm/php.ini
 
 COPY hhvm_entrypoint.sh /usr/local/bin/
