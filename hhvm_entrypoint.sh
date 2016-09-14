@@ -1,18 +1,24 @@
 #!/bin/bash
 
->&2 echo "Compile php code ...!"
+OUTPUT_FILE="/var/run/hhvm/hhvm.hhbc"
 
-touch /var/run/hhvm/fileindex
+# Check if hhbc file exists
 
-INDEX_TMP="/var/run/hhvm/fileindex"
+if [ ! -f "$OUTPUT_FILE" ]; then
+    >&2 echo "Compile php code ...!"
 
-find $PHP_SRC_ROOT -name \*.php > $INDEX_TMP
+    touch /var/run/hhvm/fileindex
 
-hhvm --hphp -t hhbc --input-list $INDEX_TMP --output-dir /var/run/hhvm/
+    INDEX_TMP="/var/run/hhvm/fileindex"
 
->&2 echo "Clear file content"
-while read -u 10 p; do
-  truncate -s 0 $p
-done 10<$INDEX_TMP
+    find $PHP_SRC_ROOT -name \*.php > $INDEX_TMP
+
+    hhvm --hphp -t hhbc --input-list $INDEX_TMP --output-dir /var/run/hhvm/
+
+    >&2 echo "Clear file content"
+    while read -u 10 p; do
+      truncate -s 0 $p
+    done 10<$INDEX_TMP
+fi
 
 exec "$@"
